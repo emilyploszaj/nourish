@@ -1,0 +1,101 @@
+{
+	"values": [
+		"golden_carrot",
+		"baked_potato",
+		"beetroot_soup",
+		"beetroot",
+		"carrot",
+		"dried_kelp",
+		"poisonous_potato",
+		"potato",
+		"pumpkin_pie"
+	],
+	"libcd": {
+		"entries": [
+			{
+				"when": [
+					{ "libcd:mod_loaded": "veggie_way" }
+				],
+				"values": [
+					"veggie_way:pumpkin_chunk",
+					"veggie_way:cactus_chunk",
+					"veggie_way:pumpkin_soup",
+					"veggie_way:cactus_soup",
+					"veggie_way:carrot_soup",
+					"veggie_way:super_petals"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "epicurean" }
+				],
+				"values": [
+					"epicurean:tomato",
+					"epicurean:pepper",
+					"epicurean:spaghetti",
+					"epicurean:beef_stew",
+					"epicurean:onion"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "liltater" }
+				],
+				"values": [
+					"liltater:lil_tater_tot",
+					"liltater:compressed_tater_tot",
+					"liltater:irritated_tater",
+					"liltater:drowned_tater"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "flax" }
+				],
+				"values": [
+					"flax:roasted_flax_seeds"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "campanion" }
+				],
+				"values": [
+					"campanion:mre"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "sandwichable" }
+				],
+				"values": [
+					"sandwichable:lettuce_head",
+					"sandwichable:lettuce_leaf",
+					"sandwichable:tomato",
+					"sandwichable:tomato_slice"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "thehallow" }
+				],
+				"values": [
+					"thehallow:baked_pumpkin_seeds",
+					"thehallow:pumpkin_stew",
+					"thehallow:tiny_pumpkin",
+					"thehallow:tiny_witched_pumpkin",
+					"thehallow:peppermint",
+					"thehallow:golden_candy_corn"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "rotmgfood" }
+				],
+				"values": [
+					"rotmgfood:slicedyam"
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"required": true,
+	"package": "dev.emi.nourish.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"PlayerEntityMixin",
+		"StatusEffectInstanceMixin",
+		"EntityPotionEffectS2CPacketMixin"
+	],
+	"client": [
+		"InventoryScreenMixin",
+		"StatusEffectUtilMixin",
+		"ClientPlayNetworkHandlerMixin",
+		"ItemStackMixin",
+		"CakeBlockMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

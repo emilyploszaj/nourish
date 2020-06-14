@@ -1,0 +1,119 @@
+{
+	"values": [
+		"pumpkin_pie",
+		"cake",
+		"cookie",
+		"honey_bottle"
+	],
+	"libcd": {
+		"entries": [
+			{
+				"when": [
+					{ "libcd:mod_loaded": "veggie_way" }
+				],
+				"values": [
+					"veggie_way:chocolate_bar",
+					"veggie_way:apple_pie",
+					"veggie_way:sweet_berry_pie",
+					"veggie_way:melon_pie",
+					"veggie_way:energy_drink",
+					"veggie_way:superfood_shake",
+					"veggie_way:superfood_smoothie",
+					"veggie_way:energy_bar",
+					"veggie_way:superfood_bar"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "epicurean" }
+				],
+				"values": [
+					"epicurean:pad_thai"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "adabraniummod" }
+				],
+				"values": [
+					"adabraniummod:vibranium_soup"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "campanion" }
+				],
+				"values": [
+					"campanion:marshmallow",
+					"campanion:cooked_marshmallow",
+					"campanion:blackened_marshmallow",
+					"campanion:smore"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "moreberries" }
+				],
+				"values": [
+					"moreberries:blue_berry_pie",
+					"moreberries:yellow_berry_pie",
+					"moreberries:orange_berry_pie",
+					"moreberries:purple_berry_pie",
+					"moreberries:green_berry_pie",
+					"moreberries:black_berry_pie",
+					"moreberries:sweet_berry_pie"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "thehallow" }
+				],
+				"values": [
+					"thehallow:caramel_apple",
+					"thehallow:pumpkin_candy",
+					"thehallow:rare_candy",
+					"thehallow:winged_strawberry_candy",
+					"thehallow:peppermint",
+					"thehallow:golden_candy_corn"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "sweettooth" }
+				],
+				"values": [
+					"sweettooth:cotton_candy",
+					"sweettooth:caramel",
+					"sweettooth:apple_pie",
+					"sweettooth:sweet_jam",
+					"sweettooth:caramel_apple"
+				]
+			},
+			{
+				"when": [
+					{ "libcd:mod_loaded": "rotmgfood" }
+				],
+				"values": [
+					"rotmgfood:ambrosia",
+					"rotmgfood:softdrink",
+					"rotmgfood:solarenergydrink",
+					"rotmgfood:candyapple",
+					"rotmgfood:caramelapple",
+					"rotmgfood:chaoscake",
+					"rotmgfood:chocolatebar",
+					"rotmgfood:chocolatecreamsandwichcookie",
+					"rotmgfood:christmastreecupcake",
+					"rotmgfood:gingerbreadhouse",
+					"rotmgfood:glazedapple",
+					"rotmgfood:glowinggreengoo",
+					"rotmgfood:goldbar",
+					"rotmgfood:mouthwateringwatermelon",
+					"rotmgfood:oryxcookie",
+					"rotmgfood:pumpkinpie",
+					"rotmgfood:rainbowgummyworm",
+					"rotmgfood:sugargummyworm"
+				]
+			}
+		]
+	}
+}
