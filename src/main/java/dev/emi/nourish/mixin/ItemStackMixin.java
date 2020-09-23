@@ -16,12 +16,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tag.Tag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
 /**
@@ -37,6 +38,7 @@ public abstract class ItemStackMixin {
 		//if (getItem().isFood()) {
 		//	info.getReturnValue().add(new LiteralText("InstanceOfFood"));
 		//}
+		if (player == null) return;
 		ItemStack stack = (ItemStack) (Object) this;
 		Identifier id = Registry.ITEM.getId(stack.getItem());
 		List<ItemStack> items = new ArrayList<ItemStack>();
@@ -50,8 +52,9 @@ public abstract class ItemStackMixin {
 		}
 		for (NourishGroup group: NourishGroups.groups) {
 			for (ItemStack food: items) {
-				if (group.tag.contains(food.getItem())) {
-					groups.add(new TranslatableText("nourish.group." + group.name).asFormattedString());
+				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
+				if (tag.contains(food.getItem())) {
+					groups.add(new TranslatableText("nourish.group." + group.name).getString());
 					break;
 				}
 			}
@@ -60,5 +63,4 @@ public abstract class ItemStackMixin {
 			info.getReturnValue().add(new LiteralText(String.join(", ", groups)).formatted(Formatting.GOLD));
 		}
 	}
-
 }

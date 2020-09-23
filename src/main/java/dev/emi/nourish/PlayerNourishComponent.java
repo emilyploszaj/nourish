@@ -12,10 +12,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.FoodComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
 public class PlayerNourishComponent implements NourishComponent {
@@ -44,7 +46,8 @@ public class PlayerNourishComponent implements NourishComponent {
 			}
 		} else {
 			for (NourishGroup group: NourishGroups.groups) {
-				if (group.tag.contains(stack.getItem())) {
+				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
+				if (tag.contains(stack.getItem())) {
 					FoodComponent comp = stack.getItem().getFoodComponent();
 					consume(group, comp.getHunger() + comp.getSaturationModifier());
 				}

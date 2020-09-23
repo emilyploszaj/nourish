@@ -1,12 +1,9 @@
 package dev.emi.nourish.groups;
 
-import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 public class NourishGroup {
 	public transient Identifier identifier;
-	public transient Tag<Item> tag;
 	public String name;
 	public String color;
 	public float default_value = 0.8f;

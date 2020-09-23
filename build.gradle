@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.7-SNAPSHOT'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -36,14 +36,10 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 	
-	modApi "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:2.3.4"
-	modApi "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-entity:2.3.4"
-	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-base:2.3.4"
-	include "io.github.OnyxStudios.Cardinal-Components-API:cardinal-components-entity:2.3.4"
-
-	modImplementation  "io.github.cottonmc:LibCD:2.4.0+1.15.2"
-	modCompile  "io.github.cottonmc:LibCD:2.4.0+1.15.2"
-	include "io.github.cottonmc:LibCD:2.4.0+1.15.2"
+	modCompile "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.5.4"
+	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.5.4"
+	modCompile "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:2.5.4"
+	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:2.5.4"
 }
 processResources {
 	inputs.property "version", project.version

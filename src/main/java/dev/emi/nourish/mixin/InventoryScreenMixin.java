@@ -11,23 +11,23 @@ import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.container.PlayerContainer;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerContainer> implements RecipeBookProvider {
+public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements RecipeBookProvider {
 	private static final Identifier GUI_TEX = new Identifier("nourish", "textures/gui/gui.png");
 	private TexturedButtonWidget nourishWidget;
 
-	public InventoryScreenMixin(PlayerContainer container, PlayerInventory inventory, Text text) {
+	public InventoryScreenMixin(PlayerScreenHandler container, PlayerInventory inventory, Text text) {
 		super(container, inventory, text);
 	}
 
 	@Inject(at = @At("TAIL"), method = "init")
 	public void init(CallbackInfo info) {
-		nourishWidget = new TexturedButtonWidget(this.x + this.containerWidth - 9 - 5, this.y + 5, 9, 9, 0, 20, 9, GUI_TEX, (widget) -> {
+		nourishWidget = new TexturedButtonWidget(this.x + this.backgroundWidth - 9 - 5, this.y + 5, 9, 9, 0, 20, 9, GUI_TEX, (widget) -> {
 			MinecraftClient.getInstance().openScreen(new NourishScreen(true));
 		});
 		this.addButton(nourishWidget);
@@ -35,6 +35,6 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
 	@Inject(at = @At("TAIL"), method = "tick")
 	public void tick(CallbackInfo info) {
-		nourishWidget.setPos(this.x + this.containerWidth - 9 - 5, this.y + 5);// :tiny_potato:
+		nourishWidget.setPos(this.x + this.backgroundWidth - 9 - 5, this.y + 5);// :tiny_potato:
 	}
 }

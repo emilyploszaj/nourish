@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.emi.nourish.effects.NourishStatusEffectInstance;
 import dev.emi.nourish.wrapper.EntityPotionEffectS2CPacketWrapper;
-import net.minecraft.client.network.packet.EntityPotionEffectS2CPacket;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket;
 
-@Mixin(EntityPotionEffectS2CPacket.class)
+@Mixin(EntityStatusEffectS2CPacket.class)
 public class EntityPotionEffectS2CPacketMixin implements EntityPotionEffectS2CPacketWrapper {
 	@Shadow
 	private byte flags;

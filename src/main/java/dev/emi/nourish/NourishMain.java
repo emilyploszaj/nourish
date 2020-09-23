@@ -15,6 +15,5 @@ public class NourishMain implements ModInitializer {
 	public void onInitialize() {
 		EntityComponentCallback.event(PlayerEntity.class).register((player, components) -> components.put(NOURISH, new PlayerNourishComponent(player)));
 		NourishGroups.init();
-		NourishTags.init();
 	}
 }
