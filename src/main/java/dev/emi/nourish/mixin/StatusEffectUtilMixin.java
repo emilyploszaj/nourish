@@ -15,7 +15,12 @@ public class StatusEffectUtilMixin {
 	@Inject(at = @At("RETURN"), method = "durationToString", cancellable = true)
 	private static void durationToString(StatusEffectInstance inst, float f, CallbackInfoReturnable<String> info) {
 		if (inst instanceof NourishStatusEffectInstance) {
-			info.setReturnValue("Malnourished");
+			NourishStatusEffectInstance effect = (NourishStatusEffectInstance) inst;
+			if (effect.getEffectType().isBeneficial()) {
+				info.setReturnValue("Nourished");
+			} else {
+				info.setReturnValue("Malnourished");
+			}
 		}
 	}
 }

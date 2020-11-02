@@ -19,10 +19,7 @@ public class PlayerEntityMixin {
 	
 	@Inject(at = @At("HEAD"), method = "eatFood")
 	public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
-		System.out.println(((PlayerEntity) (Object) this).getEntityName());
-		System.out.println(stack.getName().asString());
 		if (!world.isClient && stack.isFood()) {
-			System.out.println("success");
 			NourishComponent comp = NourishMain.NOURISH.get((PlayerEntity) (Object) this);
 			comp.consumeFood(stack);
 		}
