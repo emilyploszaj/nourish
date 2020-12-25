@@ -101,6 +101,11 @@ public class PlayerNourishComponent implements NourishComponent {
 	}
 
 	@Override
+	public void setValue(NourishGroup group, float val) {
+		nourishment.put(group, val);
+	}
+
+	@Override
 	public void fromTag(CompoundTag tag) {
 		for (Map.Entry<NourishGroup, Float> entry: nourishment.entrySet()) {
 			if (tag.contains(entry.getKey().name)) {

@@ -14,5 +14,7 @@ public interface NourishComponent extends EntitySyncedComponent {
 	
 	public float getValue(NourishGroup group);
 
+	public void setValue(NourishGroup group, float val);
+
 	public void consume(NourishGroup group, float val);
 }
