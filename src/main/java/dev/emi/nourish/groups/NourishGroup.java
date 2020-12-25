@@ -10,6 +10,7 @@ public class NourishGroup {
 	public float decay = 0.2f;
 	public float multiplier = 1f;
 	public boolean secondary = false;
+	public boolean description = false;
 
 	public NourishGroup(Identifier id) {
 		identifier = id;

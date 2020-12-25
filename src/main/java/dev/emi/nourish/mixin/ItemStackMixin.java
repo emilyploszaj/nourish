@@ -25,9 +25,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
-/**
- * This isn't compiled in release builds, it's just a way I can search for all food items in a large modpack when developing
- */
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 	@Shadow

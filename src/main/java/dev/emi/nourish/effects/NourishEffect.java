@@ -15,7 +15,7 @@ public class NourishEffect {
 
 	public void apply(PlayerEntity player) {
 		for (Pair<StatusEffect, Integer> effect: status_effects) {
-			player.addStatusEffect(new NourishStatusEffectInstance(effect.getLeft(), 400, effect.getRight()));
+			player.addStatusEffect(new NourishStatusEffectInstance(effect.getLeft(), 100, effect.getRight()));
 		}
 	}
 

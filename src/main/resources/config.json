@@ -41,7 +41,8 @@
 			"decay": 0.1,
 			"multiplier": 2.0,
 			"color": "db60ae",
-			"secondary": true
+			"secondary": true,
+			"description": true
 		}
 	],
 	"effects": [
