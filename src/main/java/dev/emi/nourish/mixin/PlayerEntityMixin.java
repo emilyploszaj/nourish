@@ -41,7 +41,7 @@ public class PlayerEntityMixin {
 		if (ticks >= 20) {
 			ticks = 0;
 			PlayerEntity player = (PlayerEntity) (Object) this;
-			if (!player.world.isClient) {
+			if (!player.world.isClient && !player.isCreative()) {
 				NourishComponent comp = NourishMain.NOURISH.get(player);
 				comp.decay();
 			}
