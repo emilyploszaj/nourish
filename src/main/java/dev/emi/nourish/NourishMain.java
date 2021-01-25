@@ -42,6 +42,7 @@ public class NourishMain implements ModInitializer {
 		NourishGroups.init();
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("nourish")
+				.requires(source -> source.hasPermissionLevel(2))
 				.then(
 					literal("get")
 					.then(
