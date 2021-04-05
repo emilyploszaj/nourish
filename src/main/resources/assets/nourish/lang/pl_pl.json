@@ -1,0 +1,21 @@
+{
+	"nourish.command.invalid_group": "Nieprawidłowa nazwa grupy",
+	"nourish.command.value": "Nourish group %d is at %d",
+	"nourish.command.set": "Nourish group %d set to %d",
+	"nourish.gui.nourishment": "Pożywienie",
+	"nourish.gui.secondary": "Drugorzędny",
+	"nourish.effect.caused": "Spowodowany przez:",
+	"nourish.effect.cause.multiple.above": "Średnio %d powyżej %d%%",
+	"nourish.effect.cause.multiple.below": "Średnio %d poniżej %d%%",
+	"nourish.effect.cause.multiple.above_and_below": "Średnio %d powyżej %d%% i poniżej %d%%",
+	"nourish.effect.cause.single.above": "%d powyżej %d%%",
+	"nourish.effect.cause.single.below": "%d poniżej %d%%",
+	"nourish.effect.cause.single.above_and_below": "%d powyżej %d%% i poniżej %d%%",
+	"nourish.group.fruit": "Owoc",
+	"nourish.group.vegetables": "Warzywa",
+	"nourish.group.carbohydrates": "Węglowodany",
+	"nourish.group.protein": "Białko",
+	"nourish.group.fats": "Tłuszcze",
+	"nourish.group.sweets": "Słodycze",
+	"nourish.group.description.sweets": "Zbyt wiele słodyczy jest dla ciebie szkodliwe!"
+}
