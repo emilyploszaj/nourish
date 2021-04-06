@@ -1,9 +1,9 @@
 {
 	"nourish.command.invalid_group": "Nieprawidłowa nazwa grupy",
-	"nourish.command.value": "Nourish group %d is at %d",
-	"nourish.command.set": "Nourish group %d set to %d",
-	"nourish.gui.nourishment": "Pożywienie",
-	"nourish.gui.secondary": "Drugorzędny",
+	"nourish.command.value": "Grupa %d jest na poziomie %d",
+	"nourish.command.set": "Grupa %d jest ustawiona na %d",
+	"nourish.gui.nourishment": "Składniki odżywcze",
+	"nourish.gui.secondary": "Drugorzędne",
 	"nourish.effect.caused": "Spowodowany przez:",
 	"nourish.effect.cause.multiple.above": "Średnio %d powyżej %d%%",
 	"nourish.effect.cause.multiple.below": "Średnio %d poniżej %d%%",
@@ -11,11 +11,11 @@
 	"nourish.effect.cause.single.above": "%d powyżej %d%%",
 	"nourish.effect.cause.single.below": "%d poniżej %d%%",
 	"nourish.effect.cause.single.above_and_below": "%d powyżej %d%% i poniżej %d%%",
-	"nourish.group.fruit": "Owoc",
+	"nourish.group.fruit": "Owoce",
 	"nourish.group.vegetables": "Warzywa",
 	"nourish.group.carbohydrates": "Węglowodany",
-	"nourish.group.protein": "Białko",
+	"nourish.group.protein": "Białka",
 	"nourish.group.fats": "Tłuszcze",
 	"nourish.group.sweets": "Słodycze",
-	"nourish.group.description.sweets": "Zbyt wiele słodyczy jest dla ciebie szkodliwe!"
+	"nourish.group.description.sweets": "Zbyt dużo słodyczy ci szkodzi!"
 }
