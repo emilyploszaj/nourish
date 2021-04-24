@@ -25,6 +25,6 @@ public class EntityPotionEffectS2CPacketMixin implements EntityPotionEffectS2CPa
 
 	@Override
 	public boolean getNourishFlag() {
-		return (flags &= 32) == 32;
+		return (flags & 32) == 32;
 	}
 }
