@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import dev.emi.nourish.NourishComponent;
 import dev.emi.nourish.NourishMain;
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -38,15 +37,16 @@ public class NourishScreen extends Screen {
 	@Override
 	public void init(MinecraftClient client, int int_1, int int_2) {
 		super.init(client, int_1, int_2);
-		for (NourishGroup group: NourishGroups.groups) {
+		List<NourishGroup> groups = NourishMain.NOURISH.get(client.player).getProfile().groups;
+		for (NourishGroup group: groups) {
 			int l = this.textRenderer.getWidth(new TranslatableText("nourish.group." + group.identifier.getPath()).getString());
 			if (l > maxNameLength) {
 				maxNameLength = l;
 			}
 		}
 		w = maxNameLength + 120;
-		h = 34 + NourishGroups.groups.size() * 20;
-		if (NourishGroups.groups.size() > 0 && NourishGroups.groups.get(NourishGroups.groups.size() - 1).secondary) {
+		h = 34 + groups.size() * 20;
+		if (groups.size() > 0 && groups.get(groups.size() - 1).secondary) {
 			h += 24;
 		}
 		x = (width - w) / 2 - 2;
@@ -68,7 +68,7 @@ public class NourishScreen extends Screen {
 		this.drawTexture(matrices, x + w, y + h, 4, 4, 4, 4);
 		int yo = 28;
 		boolean secondary = false;
-		for (NourishGroup group: NourishGroups.groups) {
+		for (NourishGroup group: NourishMain.NOURISH.get(client.player).getProfile().groups) {
 			if (group.secondary && !secondary) {
 				secondary = true;
 				TranslatableText t = new TranslatableText("nourish.gui.secondary");

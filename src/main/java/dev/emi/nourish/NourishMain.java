@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
+import dev.emi.nourish.profile.NourishProfiles;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
@@ -30,16 +30,20 @@ public class NourishMain implements ModInitializer {
 
 	private final static SuggestionProvider<ServerCommandSource> NUTRIENT_SUGGESTIONS = (context, builder) -> {
 		List<String> nutrients = Lists.newArrayList();
-		for (NourishGroup group: NourishGroups.groups) {
+		for (NourishGroup group: NOURISH.get(context.getSource().getPlayer()).getProfile().groups) {
 			nutrients.add(group.name);
 		}
 		return CommandSource.suggestMatching(nutrients, builder);
 	};
 
+	private final static SuggestionProvider<ServerCommandSource> PROFILE_SUGGESTIONS = (context, builder) -> {
+		return CommandSource.suggestMatching(NourishProfiles.profiles.keySet(), builder);
+	};
+
 	@Override
 	public void onInitialize() {
 		EntityComponentCallback.event(PlayerEntity.class).register((player, components) -> components.put(NOURISH, new PlayerNourishComponent(player)));
-		NourishGroups.init();
+		NourishProfiles.init();
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("nourish")
 				.requires(source -> source.hasPermissionLevel(2))
@@ -49,7 +53,8 @@ public class NourishMain implements ModInitializer {
 						argument("group", word())
 						.suggests(NUTRIENT_SUGGESTIONS)
 						.executes(context -> {
-							NourishGroup group = NourishGroups.byName.get(context.getArgument("group", String.class));
+							NourishGroup group = NOURISH.get(context.getSource().getPlayer()).getProfile()
+								.byName.get(context.getArgument("group", String.class));
 							if (group == null) {
 								throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_group")).create();
 							}
@@ -68,7 +73,8 @@ public class NourishMain implements ModInitializer {
 						.then(
 							argument("amount", floatArg(0.0F, 1.0F))
 							.executes(context -> {
-								NourishGroup group = NourishGroups.byName.get(context.getArgument("group", String.class));
+								NourishGroup group = NOURISH.get(context.getSource().getPlayer()).getProfile()
+									.byName.get(context.getArgument("group", String.class));
 								final float value = context.getArgument("amount", Float.class);
 								if (group == null) {
 									throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_group")).create();
@@ -80,6 +86,24 @@ public class NourishMain implements ModInitializer {
 								return Command.SINGLE_SUCCESS;
 							})
 						)
+					)
+				)
+				.then(
+					literal("profile")
+					.then(
+						argument("profile", word())
+						.suggests(PROFILE_SUGGESTIONS)
+						.executes(context -> {
+							String name = context.getArgument("profile", String.class);
+							if (!NourishProfiles.profiles.containsKey(name)) {
+								throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_profile")).create();
+							}
+							NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
+								component.setProfile(NourishProfiles.getProfile(name));
+								context.getSource().sendFeedback(new TranslatableText("nourish.command.profile.set", name), false);
+							});
+							return Command.SINGLE_SUCCESS;
+						})
 					)
 				)
 			);

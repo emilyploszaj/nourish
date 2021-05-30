@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.emi.nourish.NourishMain;
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CakeBlock;
@@ -29,7 +28,7 @@ public abstract class CakeBlockMixin extends Block {
 	@Inject(at = @At("RETURN"), method = "tryEat")
 	private void tryEat(WorldAccess world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfoReturnable<ActionResult> info) {
 		if (info.getReturnValue() == ActionResult.SUCCESS) {
-			for (NourishGroup group: NourishGroups.groups) {
+			for (NourishGroup group: NourishMain.NOURISH.get(player).getProfile().groups) {
 				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
 				if (tag.contains(new ItemStack((Block) this).getItem())) {
 					NourishMain.NOURISH.get(player).consume(group, 2 + 0.1F);

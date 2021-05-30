@@ -2,6 +2,7 @@ package dev.emi.nourish.effects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,14 +11,13 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class NourishEffects {
-	public static List<NourishEffect> effects = new ArrayList<NourishEffect>();
 	
-	public static void init(JsonArray arr) { // Gson master :tiny_potato:
+	public static List<NourishEffect> loadEffects(Map<String, NourishGroup> byName, JsonArray arr) {
+		List<NourishEffect> effects = new ArrayList<NourishEffect>();
 		try {
 			for (JsonElement el: arr) {
 				try {
@@ -35,7 +35,7 @@ public class NourishEffects {
 						}
 						JsonArray groups = c.getAsJsonArray("groups");
 						for (JsonElement group: groups) {
-							NourishGroup g = NourishGroups.byName.get(group.getAsString());
+							NourishGroup g = byName.get(group.getAsString());
 							if (g == null) {
 								System.err.println("[nourish] Group name " + group.getAsString() + " does not exist");
 							}
@@ -62,5 +62,6 @@ public class NourishEffects {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+		return effects;
 	}
 }

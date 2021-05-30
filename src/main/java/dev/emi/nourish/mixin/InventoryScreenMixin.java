@@ -19,7 +19,6 @@ import dev.emi.nourish.NourishMain;
 import dev.emi.nourish.client.NourishScreen;
 import dev.emi.nourish.effects.NourishEffect;
 import dev.emi.nourish.effects.NourishEffectCondition;
-import dev.emi.nourish.effects.NourishEffects;
 import dev.emi.nourish.effects.NourishStatusEffectInstance;
 import dev.emi.nourish.groups.NourishGroup;
 import net.minecraft.client.MinecraftClient;
@@ -77,7 +76,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 						if (effect instanceof NourishStatusEffectInstance) {
 							NourishMain.NOURISH.maybeGet(this.client.player).ifPresent(comp -> {
 								List<NourishEffect> nourishEffects = Lists.newArrayList();
-								for (NourishEffect eff: NourishEffects.effects) {
+								for (NourishEffect eff: comp.getProfile().effects) {
 									if (eff.test(comp)) {
 										for (Pair<StatusEffect, Integer> status : eff.status_effects) {
 											if (status.getLeft() == effect.getEffectType() && status.getRight() == effect.getAmplifier()) {

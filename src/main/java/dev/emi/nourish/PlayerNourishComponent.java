@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.emi.nourish.effects.NourishEffect;
-import dev.emi.nourish.effects.NourishEffects;
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
+import dev.emi.nourish.profile.NourishProfile;
+import dev.emi.nourish.profile.NourishProfiles;
 import nerdhub.cardinal.components.api.ComponentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,12 +22,31 @@ import net.minecraft.util.registry.Registry;
 
 public class PlayerNourishComponent implements NourishComponent {
 	private PlayerEntity player;
+	private NourishProfile profile;
 	private Map<NourishGroup, Float> nourishment = new HashMap<NourishGroup, Float>();
 
 	public PlayerNourishComponent(PlayerEntity player) {
 		this.player = player;
-		for (NourishGroup group: NourishGroups.groups) {
+		profile = NourishProfiles.getProfile("");
+		for (NourishGroup group: profile.groups) {
 			nourishment.put(group, group.getDefaultValue());
+		}
+	}
+
+	@Override
+	public NourishProfile getProfile() {
+		return profile;
+	}
+
+	@Override
+	public void setProfile(NourishProfile profile) {
+		if (this.profile != profile) {
+			this.profile = profile;
+			nourishment.clear();
+			for (NourishGroup group: profile.groups) {
+				nourishment.put(group, group.getDefaultValue());
+			}
+			sync();
 		}
 	}
 
@@ -45,7 +64,7 @@ public class PlayerNourishComponent implements NourishComponent {
 				consumeFood(food, false);
 			}
 		} else {
-			for (NourishGroup group: NourishGroups.groups) {
+			for (NourishGroup group: profile.groups) {
 				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
 				if (tag.contains(stack.getItem())) {
 					FoodComponent comp = stack.getItem().getFoodComponent();
@@ -68,14 +87,14 @@ public class PlayerNourishComponent implements NourishComponent {
 
 	@Override
 	public void decay() {
-		for (NourishGroup group: NourishGroups.groups) {
+		for (NourishGroup group: profile.groups) {
 			float f = nourishment.get(group);
 			nourishment.put(group, f);
 			f -= group.getDecay() / 3000f;
 			if (f < 0) f = 0f;
 			nourishment.put(group, f);
 		}
-		for (NourishEffect eff: NourishEffects.effects) {
+		for (NourishEffect eff: profile.effects) {
 			if (eff.test(this)) {
 				eff.apply(player);
 			}
@@ -85,7 +104,7 @@ public class PlayerNourishComponent implements NourishComponent {
 
 	@Override
 	public void exhaust() {
-		for (NourishGroup group: NourishGroups.groups) {
+		for (NourishGroup group: profile.groups) {
 			float f = nourishment.get(group);
 			nourishment.put(group, f);
 			f -= group.getDecay() / 1000f;
@@ -107,6 +126,9 @@ public class PlayerNourishComponent implements NourishComponent {
 
 	@Override
 	public void fromTag(CompoundTag tag) {
+		if (tag.contains("Profile")) {
+			setProfile(NourishProfiles.getProfile(tag.get("Profile").asString()));
+		}
 		for (Map.Entry<NourishGroup, Float> entry: nourishment.entrySet()) {
 			if (tag.contains(entry.getKey().name)) {
 				entry.setValue(tag.getFloat(entry.getKey().name));
@@ -116,6 +138,7 @@ public class PlayerNourishComponent implements NourishComponent {
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
+		tag.putString("Profile", profile.name);
 		for (Map.Entry<NourishGroup, Float> entry: nourishment.entrySet()) {
 			tag.putFloat(entry.getKey().name, entry.getValue());
 		}

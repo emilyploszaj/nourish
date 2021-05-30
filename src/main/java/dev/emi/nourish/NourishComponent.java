@@ -1,10 +1,15 @@
 package dev.emi.nourish;
 
 import dev.emi.nourish.groups.NourishGroup;
+import dev.emi.nourish.profile.NourishProfile;
 import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
 import net.minecraft.item.ItemStack;
 
 public interface NourishComponent extends EntitySyncedComponent {
+
+	public NourishProfile getProfile();
+
+	public void setProfile(NourishProfile profile);
 	
 	public void consumeFood(ItemStack stack);
 	

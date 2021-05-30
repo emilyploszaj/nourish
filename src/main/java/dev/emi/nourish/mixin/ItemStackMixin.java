@@ -9,8 +9,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import dev.emi.nourish.NourishMain;
 import dev.emi.nourish.groups.NourishGroup;
-import dev.emi.nourish.groups.NourishGroups;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -47,7 +48,8 @@ public abstract class ItemStackMixin {
 		} else {
 			items.add(stack);
 		}
-		for (NourishGroup group: NourishGroups.groups) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		for (NourishGroup group: NourishMain.NOURISH.get(client.player).getProfile().groups) {
 			for (ItemStack food: items) {
 				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
 				if (tag.contains(food.getItem())) {
