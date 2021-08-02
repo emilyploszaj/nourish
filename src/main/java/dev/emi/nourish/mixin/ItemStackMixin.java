@@ -33,9 +33,9 @@ public abstract class ItemStackMixin {
 
 	@Inject(at = @At("RETURN"), method = "getTooltip")
 	public void getTooltip(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info) {
-		//if (getItem().isFood()) {
-		//	info.getReturnValue().add(new LiteralText("InstanceOfFood"));
-		//}
+		if (NourishMain.debugTooltip && getItem().isFood()) {
+			info.getReturnValue().add(new LiteralText("NourishFood"));
+		}
 		if (player == null) return;
 		ItemStack stack = (ItemStack) (Object) this;
 		Identifier id = Registry.ITEM.getId(stack.getItem());

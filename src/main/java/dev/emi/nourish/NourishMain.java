@@ -10,6 +10,8 @@ import dev.emi.nourish.profile.NourishProfiles;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.EntityComponentCallback;
+import nerdhub.cardinal.components.api.util.EntityComponents;
+import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
@@ -28,6 +30,8 @@ import java.util.List;
 public class NourishMain implements ModInitializer {
 	public static final ComponentType<NourishComponent> NOURISH = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier("nourish:nourish"), NourishComponent.class);
 
+	public static boolean debugTooltip = false;
+
 	private final static SuggestionProvider<ServerCommandSource> NUTRIENT_SUGGESTIONS = (context, builder) -> {
 		List<String> nutrients = Lists.newArrayList();
 		for (NourishGroup group: NOURISH.get(context.getSource().getPlayer()).getProfile().groups) {
@@ -43,6 +47,7 @@ public class NourishMain implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EntityComponentCallback.event(PlayerEntity.class).register((player, components) -> components.put(NOURISH, new PlayerNourishComponent(player)));
+		EntityComponents.setRespawnCopyStrategy(NOURISH, RespawnCopyStrategy.ALWAYS_COPY);
 		NourishProfiles.init();
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("nourish")

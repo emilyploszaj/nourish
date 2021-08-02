@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import dev.emi.nourish.groups.NourishGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class NourishEffects {
 	
@@ -48,10 +47,7 @@ public class NourishEffects {
 						o = status.getAsJsonObject();
 						String s = o.get("status").getAsString();
 						int lvl = o.get("level").getAsInt();
-						if (Registry.STATUS_EFFECT.get(new Identifier(s)) == null) {
-							throw new Exception();
-						}
-						effect.status_effects.add(Pair.of(Registry.STATUS_EFFECT.get(new Identifier(s)), lvl));
+						effect.status_effects.add(Pair.of(new Identifier(s), lvl));
 					}
 					effects.add(effect);
 				} catch (Exception e) {

@@ -28,7 +28,6 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -36,6 +35,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements RecipeBookProvider {
@@ -78,8 +78,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 								List<NourishEffect> nourishEffects = Lists.newArrayList();
 								for (NourishEffect eff: comp.getProfile().effects) {
 									if (eff.test(comp)) {
-										for (Pair<StatusEffect, Integer> status : eff.status_effects) {
-											if (status.getLeft() == effect.getEffectType() && status.getRight() == effect.getAmplifier()) {
+										for (Pair<Identifier, Integer> status : eff.status_effects) {
+											if (Registry.STATUS_EFFECT.get(status.getLeft()) == effect.getEffectType() && status.getRight() == effect.getAmplifier()) {
 												nourishEffects.add(eff);
 											}
 										}

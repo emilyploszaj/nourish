@@ -8,6 +8,7 @@ import dev.emi.nourish.groups.NourishGroup;
 import dev.emi.nourish.profile.NourishProfile;
 import dev.emi.nourish.profile.NourishProfiles;
 import nerdhub.cardinal.components.api.ComponentType;
+import nerdhub.cardinal.components.api.component.extension.CopyableComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -20,7 +21,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
-public class PlayerNourishComponent implements NourishComponent {
+public class PlayerNourishComponent implements NourishComponent, CopyableComponent<PlayerNourishComponent> {
 	private PlayerEntity player;
 	private NourishProfile profile;
 	private Map<NourishGroup, Float> nourishment = new HashMap<NourishGroup, Float>();
@@ -31,6 +32,11 @@ public class PlayerNourishComponent implements NourishComponent {
 		for (NourishGroup group: profile.groups) {
 			nourishment.put(group, group.getDefaultValue());
 		}
+	}
+
+	@Override
+	public void copyFrom(PlayerNourishComponent other) {
+		setProfile(other.getProfile());
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import dev.emi.nourish.NourishMain;
 import dev.emi.nourish.effects.NourishEffect;
 import dev.emi.nourish.effects.NourishEffects;
 import dev.emi.nourish.groups.NourishGroup;
@@ -46,6 +47,9 @@ public class NourishProfiles {
 			JsonObject o = GSON.fromJson(new FileReader("config/nourish.json"), JsonObject.class);
 			defaultProfile = loadProfile("default", o);
 			profiles.put("default", defaultProfile);
+			if (o.has("debug")) {
+				NourishMain.debugTooltip = o.getAsJsonPrimitive("debug").getAsBoolean();
+			}
 			if (o.has("profiles")) {
 				JsonArray arr = o.getAsJsonArray("profiles");
 				for (JsonElement el : arr) {
