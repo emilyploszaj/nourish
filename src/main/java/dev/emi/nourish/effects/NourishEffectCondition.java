@@ -17,6 +17,6 @@ public class NourishEffectCondition {
 			f += comp.getValue(group);
 		}
 		f /= groups.size();
-		return f < below && f > above;
+		return f < below && f >= above;
 	}
 }

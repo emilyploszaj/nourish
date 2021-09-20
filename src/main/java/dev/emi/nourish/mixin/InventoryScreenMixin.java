@@ -1,5 +1,6 @@
 package dev.emi.nourish.mixin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,13 +12,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import dev.emi.nourish.NourishComponent;
 import dev.emi.nourish.NourishMain;
+import dev.emi.nourish.PlayerNourishComponent;
 import dev.emi.nourish.client.NourishScreen;
 import dev.emi.nourish.effects.NourishEffect;
+import dev.emi.nourish.effects.NourishEffect.NourishAttribute;
 import dev.emi.nourish.effects.NourishEffectCondition;
 import dev.emi.nourish.effects.NourishStatusEffectInstance;
 import dev.emi.nourish.groups.NourishGroup;
@@ -28,12 +33,17 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -93,35 +103,83 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 											lines.add(new LiteralText(""));
 										}
 										first = false;
-										lines.add(new TranslatableText("nourish.effect.caused"));
-										for (NourishEffectCondition condition: eff.conditions) {
-											List<String> groups = Lists.newArrayList();
-											for (NourishGroup group: condition.groups) {
-												groups.add(new TranslatableText("nourish.group." + group.name).getString());
-											}
-											Text text = new LiteralText(String.join(", ", groups));
-											String root = "nourish.effect.cause.multiple";
-											if (groups.size() == 1) {
-												root = "nourish.effect.cause.single";
-											}
-											if (condition.above != -1.0F) {
-												if (condition.below != 2.0F) {
-													lines.add(new TranslatableText(root + ".above_and_below", text,
-														(int) (condition.above * 100), (int) (condition.below * 100)));
-												} else {
-													lines.add(new TranslatableText(root + ".above", text, (int) (condition.above * 100)));
-												}
-											} else {
-												lines.add(new TranslatableText(root + ".below", text, (int) (condition.below * 100)));
-											}
-										}
+										addCause(lines, eff);
 									}
 									this.renderTooltip(matrices, lines, mouseX, mouseY);
 								}
 							});
 						}
 					}
+				} else if (nourishWidget.isHovered()) {
+					this.renderTooltip(matrices, getAttributesTooltip(), mouseX, mouseY);
 				}
+			}
+		}
+	}
+
+	@Unique
+	private List<Text> getAttributesTooltip() {
+		List<Text> list = new ArrayList<Text>();
+		NourishComponent comp = NourishMain.NOURISH.get(client.player);
+		boolean first = true;
+		for (NourishEffect eff: comp.getProfile().effects) {
+			if (eff.test(comp)) {
+				if (eff.attributes.size() > 0) {
+					if (!first) {
+						list.add(new LiteralText(""));
+					}
+					first = false;
+					addCause(list, eff);
+				}
+				for (NourishAttribute attr : eff.attributes) {
+					EntityAttribute attribute = Registry.ATTRIBUTE.get(attr.id);
+					EntityAttributeModifier modifier = new EntityAttributeModifier(PlayerNourishComponent.ATTRIBUTE_UUID,
+						"nourish", attr.amount, attr.operation);
+					double v = modifier.getValue();
+					if (modifier.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_BASE
+							&& modifier.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_TOTAL) {
+						if (attribute.equals(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)) {
+							v *= 10.0D;
+						}
+					} else {
+						v *= 100.0D;
+					}
+					Text text = new TranslatableText(attribute.getTranslationKey());
+					if (v > 0) {
+						list.add(new TranslatableText("attribute.modifier.plus." + modifier.getOperation().getId(),
+							ItemStack.MODIFIER_FORMAT.format(v), text).formatted(Formatting.BLUE));
+					} else {
+						list.add(new TranslatableText("attribute.modifier.take." + modifier.getOperation().getId(),
+							ItemStack.MODIFIER_FORMAT.format(-v), text).formatted(Formatting.RED));
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	@Unique
+	private void addCause(List<Text> lines, NourishEffect eff) {
+		lines.add(new TranslatableText("nourish.effect.caused"));
+		for (NourishEffectCondition condition: eff.conditions) {
+			List<String> groups = Lists.newArrayList();
+			for (NourishGroup group: condition.groups) {
+				groups.add(new TranslatableText("nourish.group." + group.name).getString());
+			}
+			Text text = new LiteralText(String.join(", ", groups));
+			String root = "nourish.effect.cause.multiple";
+			if (groups.size() == 1) {
+				root = "nourish.effect.cause.single";
+			}
+			if (condition.above != -1.0F) {
+				if (condition.below != 2.0F) {
+					lines.add(new TranslatableText(root + ".above_and_below", text,
+						(int) (condition.above * 100), (int) (condition.below * 100)));
+				} else {
+					lines.add(new TranslatableText(root + ".above", text, (int) (condition.above * 100)));
+				}
+			} else {
+				lines.add(new TranslatableText(root + ".below", text, (int) (condition.below * 100)));
 			}
 		}
 	}

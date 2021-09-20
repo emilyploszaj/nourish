@@ -10,7 +10,9 @@ import com.google.gson.JsonObject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import dev.emi.nourish.effects.NourishEffect.NourishAttribute;
 import dev.emi.nourish.groups.NourishGroup;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.util.Identifier;
 
 public class NourishEffects {
@@ -42,12 +44,32 @@ public class NourishEffects {
 						}
 						effect.conditions.add(cond);
 					}
-					JsonArray statuses = o.getAsJsonArray("status_effects");
-					for (JsonElement status: statuses) {
-						o = status.getAsJsonObject();
-						String s = o.get("status").getAsString();
-						int lvl = o.get("level").getAsInt();
-						effect.status_effects.add(Pair.of(new Identifier(s), lvl));
+					if (o.has("status_effects")) {
+						JsonArray statuses = o.getAsJsonArray("status_effects");
+						for (JsonElement status: statuses) {
+							JsonObject ob = status.getAsJsonObject();
+							String s = ob.get("status").getAsString();
+							int lvl = ob.get("level").getAsInt();
+							effect.status_effects.add(Pair.of(new Identifier(s), lvl));
+						}
+					}
+					if (o.has("attributes")) {
+						JsonArray attributes = o.getAsJsonArray("attributes");
+						for (JsonElement attribute : attributes) {
+							JsonObject ob = attribute.getAsJsonObject();
+							Identifier id = new Identifier(ob.get("name").getAsString());
+							String operation = ob.get("operation").getAsString();
+							EntityAttributeModifier.Operation op =
+								operation.equals("addition") ? EntityAttributeModifier.Operation.ADDITION :
+								operation.equals("multiply_base") ? EntityAttributeModifier.Operation.MULTIPLY_BASE :
+								operation.equals("multiply_total") ? EntityAttributeModifier.Operation.MULTIPLY_TOTAL :
+								null;
+							if (op == null) {
+								throw new IllegalArgumentException("Entity attribute operation is not valid: " + operation);
+							}
+							double amount = ob.get("amount").getAsDouble();
+							effect.attributes.add(new NourishAttribute(id, op, amount));
+						}
 					}
 					effects.add(effect);
 				} catch (Exception e) {

@@ -2,14 +2,21 @@ package dev.emi.nourish;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import dev.emi.nourish.effects.NourishEffect;
+import dev.emi.nourish.effects.NourishEffect.NourishAttribute;
 import dev.emi.nourish.groups.NourishGroup;
 import dev.emi.nourish.profile.NourishProfile;
 import dev.emi.nourish.profile.NourishProfiles;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.component.extension.CopyableComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.FoodComponent;
@@ -22,9 +29,11 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
 public class PlayerNourishComponent implements NourishComponent, CopyableComponent<PlayerNourishComponent> {
+	public static final UUID ATTRIBUTE_UUID = UUID.fromString("C71B780A-3C67-4C76-87E0-C7504EAC1E2C");
 	private PlayerEntity player;
 	private NourishProfile profile;
 	private Map<NourishGroup, Float> nourishment = new HashMap<NourishGroup, Float>();
+	private Multimap<EntityAttribute, EntityAttributeModifier> attributes = HashMultimap.create();
 
 	public PlayerNourishComponent(PlayerEntity player) {
 		this.player = player;
@@ -100,11 +109,23 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 			if (f < 0) f = 0f;
 			nourishment.put(group, f);
 		}
+		refreshEffects();
+	}
+
+	public void refreshEffects() {
+		Multimap<EntityAttribute, EntityAttributeModifier> newAttributes = HashMultimap.create();
 		for (NourishEffect eff: profile.effects) {
 			if (eff.test(this)) {
 				eff.apply(player);
+				for (NourishAttribute attr : eff.attributes) {
+					newAttributes.put(Registry.ATTRIBUTE.get(attr.id),
+						new EntityAttributeModifier(ATTRIBUTE_UUID, "nourish", attr.amount, attr.operation));
+				}
 			}
 		}
+		player.getAttributes().removeModifiers(attributes);
+		attributes = newAttributes;
+		player.getAttributes().addTemporaryModifiers(newAttributes);
 		sync();
 	}
 
