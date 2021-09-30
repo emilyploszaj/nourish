@@ -1,0 +1,23 @@
+{
+	"nourish.command.invalid_group": "Неверное имя группы",
+	"nourish.command.invalid_profile": "Неверное имя профиля",
+	"nourish.command.value": "Значение группы %d находится на уровне %d",
+	"nourish.command.set": "Значение группы %d изменено на %d",
+	"nourish.command.profile.set": "Профиль питания изменен на %d",
+	"nourish.gui.nourishment": "Питательные вещества",
+	"nourish.gui.secondary": "Второстепенное",
+	"nourish.effect.caused": "Вызвано:",
+	"nourish.effect.cause.multiple.above": "Среднее значение %d выше %d%%",
+	"nourish.effect.cause.multiple.below": "Среднее значение %d ниже %d%%",
+	"nourish.effect.cause.multiple.above_and_below": "Среднее значение %d выше %d%% и ниже %d%%",
+	"nourish.effect.cause.single.above": "%d выше %d%%",
+	"nourish.effect.cause.single.below": "%d ниже %d%%",
+	"nourish.effect.cause.single.above_and_below": "%d выше %d%% и ниже %d%%",
+	"nourish.group.fruit": "Фрукты",
+	"nourish.group.vegetables": "Овощи",
+	"nourish.group.carbohydrates": "Углеводы",
+	"nourish.group.protein": "Белки",
+	"nourish.group.fats": "Жиры",
+	"nourish.group.sweets": "Сладости",
+	"nourish.group.description.sweets": "Слишком много сладостей вредит твоему организму!"
+}
