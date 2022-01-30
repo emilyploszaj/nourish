@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import dev.emi.nourish.NourishHolder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -62,18 +63,18 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	@Inject(at = @At("TAIL"), method = "init")
 	public void init(CallbackInfo info) {
 		nourishWidget = new TexturedButtonWidget(this.x + this.backgroundWidth - 9 - 5, this.y + 5, 9, 9, 0, 20, 9, GUI_TEX, (widget) -> {
-			MinecraftClient.getInstance().openScreen(new NourishScreen(true));
+			MinecraftClient.getInstance().setScreen(new NourishScreen(true));
 		});
-		this.addButton(nourishWidget);
+		this.addDrawableChild(nourishWidget);
 	}
 
 	@Inject(at = @At("TAIL"), method = "render")
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo info) {
-		if (this.client.player.inventory.getCursorStack().isEmpty() && (this.focusedSlot == null || !this.focusedSlot.hasStack())) {
+		if (this.client.player.currentScreenHandler.getCursorStack().isEmpty() && (this.focusedSlot == null || !this.focusedSlot.hasStack())) {
 			if (!recipeBook.isOpen()) {
 				if (mouseX < this.x - 8 && mouseX > this.x - 122 && mouseY > this.y && mouseY < this.height - this.y) {
 					Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
-					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+					RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 					int effectHeight = 33;
 					if (collection.size() > 5) {
 						effectHeight = 132 / (collection.size() - 1);
@@ -84,7 +85,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 					if (e < effects.size() && r > 2 && r < 29) {
 						StatusEffectInstance effect = effects.get(e);
 						if (effect instanceof NourishStatusEffectInstance) {
-							NourishMain.NOURISH.maybeGet(this.client.player).ifPresent(comp -> {
+							NourishHolder.NOURISH.maybeGet(this.client.player).ifPresent(comp -> {
 								List<NourishEffect> nourishEffects = Lists.newArrayList();
 								for (NourishEffect eff: comp.getProfile().effects) {
 									if (eff.test(comp)) {
@@ -120,7 +121,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	@Unique
 	private List<Text> getAttributesTooltip() {
 		List<Text> list = new ArrayList<Text>();
-		NourishComponent comp = NourishMain.NOURISH.get(client.player);
+		NourishComponent comp = NourishHolder.NOURISH.get(client.player);
 		boolean first = true;
 		for (NourishEffect eff: comp.getProfile().effects) {
 			if (eff.test(comp)) {
@@ -184,7 +185,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "tick")
+	@Inject(at = @At("TAIL"), method = "handledScreenTick")
 	public void tick(CallbackInfo info) {
 		nourishWidget.setPos(this.x + this.backgroundWidth - 9 - 5, this.y + 5);// :tiny_potato:
 	}

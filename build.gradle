@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -16,12 +16,9 @@ repositories {
         url = "https://jitpack.io"
     }
 	maven {
-		name = "Cotton"
-		url = "https://server.bbkr.space/artifactory/libs-release/"
+		name = 'Ladysnake Mods'
+		url = 'https://ladysnake.jfrog.io/artifactory/mods'
 	}
-}
-
-minecraft {
 }
 
 dependencies {
@@ -36,10 +33,10 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 	
-	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.5.4"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.5.4"
-	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:2.5.4"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:2.5.4"
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.0"
+	include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.0"
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.0"
+	include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.0"
 }
 processResources {
 	inputs.property "version", project.version
@@ -68,13 +65,7 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
+			from components.java
 		}
 	}
 

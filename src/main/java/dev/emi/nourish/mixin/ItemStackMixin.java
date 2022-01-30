@@ -3,6 +3,7 @@ package dev.emi.nourish.mixin;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.emi.nourish.NourishHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,15 +44,15 @@ public abstract class ItemStackMixin {
 		List<String> groups = new ArrayList<String>();
 		if (id.toString().equals("sandwichable:sandwich")) {
 			DefaultedList<ItemStack> foods = DefaultedList.ofSize(128, ItemStack.EMPTY);
-			Inventories.fromTag(stack.getSubTag("BlockEntityTag"), foods);
+			Inventories.readNbt(stack.getSubNbt("BlockEntityTag"), foods);
 			items.addAll(items);
 		} else {
 			items.add(stack);
 		}
 		MinecraftClient client = MinecraftClient.getInstance();
-		for (NourishGroup group: NourishMain.NOURISH.get(client.player).getProfile().groups) {
+		for (NourishGroup group: NourishHolder.NOURISH.get(client.player).getProfile().groups) {
 			for (ItemStack food: items) {
-				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
+				Tag<Item> tag = player.world.getTagManager().getTag(Registry.ITEM_KEY, group.identifier, (identifier -> new RuntimeException("Tag not found: " + identifier.toString())));
 				if (tag.contains(food.getItem())) {
 					groups.add(new TranslatableText("nourish.group." + group.name).getString());
 					break;
