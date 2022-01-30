@@ -12,8 +12,11 @@ import dev.emi.nourish.effects.NourishEffect.NourishAttribute;
 import dev.emi.nourish.groups.NourishGroup;
 import dev.emi.nourish.profile.NourishProfile;
 import dev.emi.nourish.profile.NourishProfiles;
-import nerdhub.cardinal.components.api.ComponentType;
-import nerdhub.cardinal.components.api.component.extension.CopyableComponent;
+import dev.onyxstudios.cca.api.v3.component.CopyableComponent;
+import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
+import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
+import dev.onyxstudios.cca.api.v3.entity.PlayerSyncCallback;
+import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -22,7 +25,8 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -43,6 +47,9 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 		}
 	}
 
+	public PlayerNourishComponent() {
+	}
+
 	@Override
 	public void copyFrom(PlayerNourishComponent other) {
 		setProfile(other.getProfile());
@@ -61,7 +68,7 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 			for (NourishGroup group: profile.groups) {
 				nourishment.put(group, group.getDefaultValue());
 			}
-			sync();
+			NourishHolder.NOURISH.sync(player);
 		}
 	}
 
@@ -73,14 +80,14 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 		Identifier id = Registry.ITEM.getId(stack.getItem());
 		if (id.toString().equals("sandwichable:sandwich")) {
 			DefaultedList<ItemStack> foods = DefaultedList.ofSize(128, ItemStack.EMPTY);
-			Inventories.fromTag(stack.getSubTag("BlockEntityTag"), foods);
+			Inventories.readNbt(stack.getSubNbt("BlockEntityTag"), foods);
 			for (ItemStack food: foods) {
 				if (food.isEmpty()) break;
 				consumeFood(food, false);
 			}
 		} else {
 			for (NourishGroup group: profile.groups) {
-				Tag<Item> tag = player.world.getTagManager().getItems().getTagOrEmpty(group.identifier);
+				Tag<Item> tag = player.world.getTagManager().getTag(Registry.ITEM_KEY, group.identifier, (identifier -> new RuntimeException(identifier.toString())));
 				if (tag.contains(stack.getItem())) {
 					FoodComponent comp = stack.getItem().getFoodComponent();
 					consume(group, comp.getHunger() + comp.getSaturationModifier());
@@ -88,7 +95,7 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 			}
 		}
 		if (s) {
-			sync();
+			NourishHolder.NOURISH.sync(player);
 		}
 	}
 
@@ -126,7 +133,7 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 		player.getAttributes().removeModifiers(attributes);
 		attributes = newAttributes;
 		player.getAttributes().addTemporaryModifiers(newAttributes);
-		sync();
+		NourishHolder.NOURISH.sync(player);
 	}
 
 	@Override
@@ -138,7 +145,7 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 			if (f < 0) f = 0f;
 			nourishment.put(group, f);
 		}
-		sync();
+		NourishHolder.NOURISH.sync(player);
 	}
 
 	@Override
@@ -152,7 +159,7 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
+	public void readFromNbt(NbtCompound tag) {
 		if (tag.contains("Profile")) {
 			setProfile(NourishProfiles.getProfile(tag.get("Profile").asString()));
 		}
@@ -164,22 +171,10 @@ public class PlayerNourishComponent implements NourishComponent, CopyableCompone
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public void writeToNbt(NbtCompound tag) {
 		tag.putString("Profile", profile.name);
 		for (Map.Entry<NourishGroup, Float> entry: nourishment.entrySet()) {
 			tag.putFloat(entry.getKey().name, entry.getValue());
 		}
-		return tag;
 	}
-
-	@Override
-	public ComponentType<?> getComponentType() {
-		return NourishMain.NOURISH;
-	}
-
-	@Override
-	public Entity getEntity() {
-		return player;
-	}
-	
 }

@@ -7,11 +7,11 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 import dev.emi.nourish.groups.NourishGroup;
 import dev.emi.nourish.profile.NourishProfiles;
-import nerdhub.cardinal.components.api.ComponentRegistry;
-import nerdhub.cardinal.components.api.ComponentType;
-import nerdhub.cardinal.components.api.event.EntityComponentCallback;
-import nerdhub.cardinal.components.api.util.EntityComponents;
-import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
+import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
+import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
+import dev.onyxstudios.cca.api.v3.entity.PlayerSyncCallback;
+import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
@@ -28,13 +28,11 @@ import static net.minecraft.server.command.CommandManager.literal;
 import java.util.List;
 
 public class NourishMain implements ModInitializer {
-	public static final ComponentType<NourishComponent> NOURISH = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier("nourish:nourish"), NourishComponent.class);
-
 	public static boolean debugTooltip = false;
 
 	private final static SuggestionProvider<ServerCommandSource> NUTRIENT_SUGGESTIONS = (context, builder) -> {
 		List<String> nutrients = Lists.newArrayList();
-		for (NourishGroup group: NOURISH.get(context.getSource().getPlayer()).getProfile().groups) {
+		for (NourishGroup group: NourishHolder.NOURISH.get(context.getSource().getPlayer()).getProfile().groups) {
 			nutrients.add(group.name);
 		}
 		return CommandSource.suggestMatching(nutrients, builder);
@@ -46,8 +44,7 @@ public class NourishMain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		EntityComponentCallback.event(PlayerEntity.class).register((player, components) -> components.put(NOURISH, new PlayerNourishComponent(player)));
-		EntityComponents.setRespawnCopyStrategy(NOURISH, RespawnCopyStrategy.ALWAYS_COPY);
+		PlayerSyncCallback.EVENT.register(PlayerNourishComponent::new);
 		NourishProfiles.init();
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			dispatcher.register(literal("nourish")
@@ -58,12 +55,12 @@ public class NourishMain implements ModInitializer {
 						argument("group", word())
 						.suggests(NUTRIENT_SUGGESTIONS)
 						.executes(context -> {
-							NourishGroup group = NOURISH.get(context.getSource().getPlayer()).getProfile()
+							NourishGroup group = NourishHolder.NOURISH.get(context.getSource().getPlayer()).getProfile()
 								.byName.get(context.getArgument("group", String.class));
 							if (group == null) {
 								throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_group")).create();
 							}
-							NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
+							NourishHolder.NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
 								context.getSource().sendFeedback(new TranslatableText("nourish.command.value", group.name, component.getValue(group)), false);
 							});
 							return Command.SINGLE_SUCCESS;
@@ -78,13 +75,13 @@ public class NourishMain implements ModInitializer {
 						.then(
 							argument("amount", floatArg(0.0F, 1.0F))
 							.executes(context -> {
-								NourishGroup group = NOURISH.get(context.getSource().getPlayer()).getProfile()
+								NourishGroup group = NourishHolder.NOURISH.get(context.getSource().getPlayer()).getProfile()
 									.byName.get(context.getArgument("group", String.class));
 								final float value = context.getArgument("amount", Float.class);
 								if (group == null) {
 									throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_group")).create();
 								}
-								NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
+								NourishHolder.NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
 									component.setValue(group, value);
 									context.getSource().sendFeedback(new TranslatableText("nourish.command.set", group.name, value), false);
 								});
@@ -103,7 +100,7 @@ public class NourishMain implements ModInitializer {
 							if (!NourishProfiles.profiles.containsKey(name)) {
 								throw new SimpleCommandExceptionType(new TranslatableText("nourish.command.invalid_profile")).create();
 							}
-							NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
+							NourishHolder.NOURISH.maybeGet(context.getSource().getPlayer()).ifPresent(component -> {
 								component.setProfile(NourishProfiles.getProfile(name));
 								context.getSource().sendFeedback(new TranslatableText("nourish.command.profile.set", name), false);
 							});

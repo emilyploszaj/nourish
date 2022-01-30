@@ -23,6 +23,9 @@
 		],
 		"client": [
 			"dev.emi.nourish.NourishClient"
+		],
+		"cardinal-components": [
+			"dev.emi.nourish.NourishHolder"
 		]
 	},
 	"mixins": [
@@ -35,5 +38,10 @@
 	},
 	"suggests": {
 		"flamingo": "*"
+	},
+	"custom": {
+		"cardinal-components": [
+			"nourish:nourish"
+		]
 	}
 }

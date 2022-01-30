@@ -14,7 +14,7 @@ import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket;
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 
-	@Redirect(method = "onEntityPotionEffect", at = @At(value = "NEW", args = "class=net/minecraft/entity/effect/StatusEffectInstance"))
+	@Redirect(method = "onEntityStatusEffect", at = @At(value = "NEW", args = "class=net/minecraft/entity/effect/StatusEffectInstance"))
 	public StatusEffectInstance onEntityPotionEffect(StatusEffect effect, int i, int j, boolean a, boolean b, boolean c, EntityStatusEffectS2CPacket packet) {
 		if (((EntityPotionEffectS2CPacketWrapper) packet).getNourishFlag()) {
 			return new NourishStatusEffectInstance(effect, i, j);

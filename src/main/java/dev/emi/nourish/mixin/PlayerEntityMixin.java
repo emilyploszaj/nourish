@@ -1,5 +1,6 @@
 package dev.emi.nourish.mixin;
 
+import dev.emi.nourish.NourishHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +21,7 @@ public class PlayerEntityMixin {
 	@Inject(at = @At("HEAD"), method = "eatFood")
 	public void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
 		if (!world.isClient && stack.isFood()) {
-			NourishComponent comp = NourishMain.NOURISH.get((PlayerEntity) (Object) this);
+			NourishComponent comp = NourishHolder.NOURISH.get((PlayerEntity) (Object) this);
 			comp.consumeFood(stack);
 		}
 	}
@@ -31,7 +32,7 @@ public class PlayerEntityMixin {
 		if (this.exhaustion > 1.0f) {
 			this.exhaustion -= 1.0f;
 			PlayerEntity player = (PlayerEntity) (Object) this;
-			NourishComponent comp = NourishMain.NOURISH.get(player);
+			NourishComponent comp = NourishHolder.NOURISH.get(player);
 			comp.exhaust();
 		}
 	}
@@ -42,7 +43,7 @@ public class PlayerEntityMixin {
 			ticks = 0;
 			PlayerEntity player = (PlayerEntity) (Object) this;
 			if (!player.world.isClient && !player.isCreative()) {
-				NourishComponent comp = NourishMain.NOURISH.get(player);
+				NourishComponent comp = NourishHolder.NOURISH.get(player);
 				comp.decay();
 			}
 		}
